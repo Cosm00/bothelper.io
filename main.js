@@ -7,8 +7,8 @@ var fs = require('fs'),
 var port = 443;
 
 var options = {
-    key: fs.readFileSync('./329084ew890fjkldslkjfdkjlsjkfscxnrewr890ew/private.key'),
-    cert: fs.readFileSync('./329084ew890fjkldslkjfdkjlsjkfscxnrewr890ew/certificate.crt'),
+    key: fs.readFileSync('./ssl/private.key'),
+    cert: fs.readFileSync('./ssl/certificate.crt'),
 };
 
 var app = express();
