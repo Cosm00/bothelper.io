@@ -1,0 +1,2006 @@
+<html>
+
+<script src="/bootstrap/jquery.min.js"></script>
+<script src="/bootstrap/popper.min.js"></script>
+<link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+<script src="/bootstrap/bootstrap.min.js"></script>
+
+<style>
+    .btn-dashe,
+    .btn-dashe:hover,
+    .btn-dashe:active,
+    .btn-dashe:visited {
+        background-color: #212b54;
+        color: #FFFFFF;
+    }
+
+    .btn-sf,
+    .btn-sf:hover,
+    .btn-sf:active,
+    .btn-sf:visited {
+        background-color: #000000;
+        color: #FFFFFF;
+    }
+
+    .btn-phantom,
+    .btn-phantom:hover,
+    .btn-phantom:active,
+    .btn-phantom:visited {
+        background-color: #562b38;
+        color: #FFFFFF;
+    }
+
+    .btn-pd,
+    .btn-pd:hover,
+    .btn-pd:active,
+    .btn-pd:visited {
+        background-color: #de4f92;
+        color: #FFFFFF;
+    }
+
+    .btn-cyber,
+    .btn-cyber:hover,
+    .btn-cyber:active,
+    .btn-cyber:visited {
+        background-color: #42d97c;
+    }
+
+    .btn-balko,
+    .btn-balko:hover,
+    .btn-balko:active,
+    .btn-balko:visited {
+        background-color: #292d3d;
+        color: #FFFFFF;
+    }
+</style>
+
+<body style="background-color: #333!important;">
+    <div class="row h-100">
+        <div class="col-sm-12 my-auto text-center">
+            <div style="width: 40rem;margin: 0 auto;float: none;margin-bottom: 10px;">
+                <div class="card text-center">
+                    <div class="card-header">
+                        Input Profile Data Here
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control" id="inputProfiles" rows="20"
+                            placeholder="Drag and Drop or Paste File Content's here."></textarea>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-dashe" onclick="doStuff('Dashe')">Dashe</button>
+                            <button type="button" class="btn btn-sf" onclick="doStuff('Splashforce')">SF</button>
+                            <button type="button" class="btn btn-phantom" onclick="doStuff('Phantom')">Phantom</button>
+                            <button type="button" class="btn btn-pd" onclick="doStuff('PD')">PD</button>
+                            <button type="button" class="btn btn-cyber" onclick="doStuff('Cyber')">Cyber</button>
+                            <button type="button" class="btn btn-balko" onclick="doStuff('Balko')">Balko</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 id="modal-title" class="modal-title">Profile Data Successfully Converter from NULL To
+                                NULL</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea class="form-control" id="outputProfiles" rows="20"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="saveTextAsFile()">Download File</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        String.prototype.replaceAll = function (search, replacement) {
+            var target = this;
+            return target.replace(new RegExp(search, 'g'), replacement);
+        };
+
+        function saveTextAsFile() {
+            var textToWrite = document.getElementById('inputProfiles').value
+            var fileNameToSaveAs = 'profileExport.json'
+            var textFileAsBlob = new Blob([textToWrite], {
+                type: 'text/plain'
+            });
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            if (window.webkitURL != null) {
+                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            } else {
+                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                downloadLink.onclick = destroyClickedElement;
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+            }
+            downloadLink.click();
+        }
+
+        function dropfile(file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                inputProfiles.value = e.target.result;
+            };
+            reader.readAsText(file, "UTF-8");
+        }
+        inputProfiles.ondrop = function (e) {
+            e.preventDefault();
+            var file = e.dataTransfer.files[0];
+            dropfile(file);
+        };
+
+        function makeid(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        function stateConverter(inputStyle, input) {
+            var jsonStuff = [{
+                    "name": "Alabama",
+                    "code": "AL"
+                },
+                {
+                    "name": "Alaska",
+                    "code": "AK"
+                },
+                {
+                    "name": "American Samoa",
+                    "code": "AS"
+                },
+                {
+                    "name": "Arizona",
+                    "code": "AZ"
+                },
+                {
+                    "name": "Arkansas",
+                    "code": "AR"
+                },
+                {
+                    "name": "California",
+                    "code": "CA"
+                },
+                {
+                    "name": "Colorado",
+                    "code": "CO"
+                },
+                {
+                    "name": "Connecticut",
+                    "code": "CT"
+                },
+                {
+                    "name": "Delaware",
+                    "code": "DE"
+                },
+                {
+                    "name": "District Of Columbia",
+                    "code": "DC"
+                },
+                {
+                    "name": "Federated States Of Micronesia",
+                    "code": "FM"
+                },
+                {
+                    "name": "Florida",
+                    "code": "FL"
+                },
+                {
+                    "name": "Georgia",
+                    "code": "GA"
+                },
+                {
+                    "name": "Guam",
+                    "code": "GU"
+                },
+                {
+                    "name": "Hawaii",
+                    "code": "HI"
+                },
+                {
+                    "name": "Idaho",
+                    "code": "ID"
+                },
+                {
+                    "name": "Illinois",
+                    "code": "IL"
+                },
+                {
+                    "name": "Indiana",
+                    "code": "IN"
+                },
+                {
+                    "name": "Iowa",
+                    "code": "IA"
+                },
+                {
+                    "name": "Kansas",
+                    "code": "KS"
+                },
+                {
+                    "name": "Kentucky",
+                    "code": "KY"
+                },
+                {
+                    "name": "Louisiana",
+                    "code": "LA"
+                },
+                {
+                    "name": "Maine",
+                    "code": "ME"
+                },
+                {
+                    "name": "Marshall Islands",
+                    "code": "MH"
+                },
+                {
+                    "name": "Maryland",
+                    "code": "MD"
+                },
+                {
+                    "name": "Massachusetts",
+                    "code": "MA"
+                },
+                {
+                    "name": "Michigan",
+                    "code": "MI"
+                },
+                {
+                    "name": "Minnesota",
+                    "code": "MN"
+                },
+                {
+                    "name": "Mississippi",
+                    "code": "MS"
+                },
+                {
+                    "name": "Missouri",
+                    "code": "MO"
+                },
+                {
+                    "name": "Montana",
+                    "code": "MT"
+                },
+                {
+                    "name": "Nebraska",
+                    "code": "NE"
+                },
+                {
+                    "name": "Nevada",
+                    "code": "NV"
+                },
+                {
+                    "name": "New Hampshire",
+                    "code": "NH"
+                },
+                {
+                    "name": "New Jersey",
+                    "code": "NJ"
+                },
+                {
+                    "name": "New Mexico",
+                    "code": "NM"
+                },
+                {
+                    "name": "New York",
+                    "code": "NY"
+                },
+                {
+                    "name": "North Carolina",
+                    "code": "NC"
+                },
+                {
+                    "name": "North Dakota",
+                    "code": "ND"
+                },
+                {
+                    "name": "Northern Mariana Islands",
+                    "code": "MP"
+                },
+                {
+                    "name": "Ohio",
+                    "code": "OH"
+                },
+                {
+                    "name": "Oklahoma",
+                    "code": "OK"
+                },
+                {
+                    "name": "Oregon",
+                    "code": "OR"
+                },
+                {
+                    "name": "Palau",
+                    "code": "PW"
+                },
+                {
+                    "name": "Pennsylvania",
+                    "code": "PA"
+                },
+                {
+                    "name": "Puerto Rico",
+                    "code": "PR"
+                },
+                {
+                    "name": "Rhode Island",
+                    "code": "RI"
+                },
+                {
+                    "name": "South Carolina",
+                    "code": "SC"
+                },
+                {
+                    "name": "South Dakota",
+                    "code": "SD"
+                },
+                {
+                    "name": "Tennessee",
+                    "code": "TN"
+                },
+                {
+                    "name": "Texas",
+                    "code": "TX"
+                },
+                {
+                    "name": "Utah",
+                    "code": "UT"
+                },
+                {
+                    "name": "Vermont",
+                    "code": "VT"
+                },
+                {
+                    "name": "Virgin Islands",
+                    "code": "VI"
+                },
+                {
+                    "name": "Virginia",
+                    "code": "VA"
+                },
+                {
+                    "name": "Washington",
+                    "code": "WA"
+                },
+                {
+                    "name": "West Virginia",
+                    "code": "WV"
+                },
+                {
+                    "name": "Wisconsin",
+                    "code": "WI"
+                },
+                {
+                    "name": "Wyoming",
+                    "code": "WY"
+                }
+            ]
+            if (inputStyle == 'State2Code') {
+                for (var i in jsonStuff) {
+                    if (input == jsonStuff[i]['name']) {
+                        return jsonStuff[i]['code']
+                    }
+                }
+            } else if (inputStyle == 'Code2State') {
+                for (var i in jsonStuff) {
+                    if (input == jsonStuff[i]['code']) {
+                        return jsonStuff[i]['name']
+                    }
+                }
+            }
+            return null;
+        }
+
+        function countryConverter(inputStyle, input) {
+            var jsonStuff = [{
+                    "name": "Afghanistan",
+                    "code": "AF"
+                },
+                {
+                    "name": "land Islands",
+                    "code": "AX"
+                },
+                {
+                    "name": "Albania",
+                    "code": "AL"
+                },
+                {
+                    "name": "Algeria",
+                    "code": "DZ"
+                },
+                {
+                    "name": "American Samoa",
+                    "code": "AS"
+                },
+                {
+                    "name": "AndorrA",
+                    "code": "AD"
+                },
+                {
+                    "name": "Angola",
+                    "code": "AO"
+                },
+                {
+                    "name": "Anguilla",
+                    "code": "AI"
+                },
+                {
+                    "name": "Antarctica",
+                    "code": "AQ"
+                },
+                {
+                    "name": "Antigua and Barbuda",
+                    "code": "AG"
+                },
+                {
+                    "name": "Argentina",
+                    "code": "AR"
+                },
+                {
+                    "name": "Armenia",
+                    "code": "AM"
+                },
+                {
+                    "name": "Aruba",
+                    "code": "AW"
+                },
+                {
+                    "name": "Australia",
+                    "code": "AU"
+                },
+                {
+                    "name": "Austria",
+                    "code": "AT"
+                },
+                {
+                    "name": "Azerbaijan",
+                    "code": "AZ"
+                },
+                {
+                    "name": "Bahamas",
+                    "code": "BS"
+                },
+                {
+                    "name": "Bahrain",
+                    "code": "BH"
+                },
+                {
+                    "name": "Bangladesh",
+                    "code": "BD"
+                },
+                {
+                    "name": "Barbados",
+                    "code": "BB"
+                },
+                {
+                    "name": "Belarus",
+                    "code": "BY"
+                },
+                {
+                    "name": "Belgium",
+                    "code": "BE"
+                },
+                {
+                    "name": "Belize",
+                    "code": "BZ"
+                },
+                {
+                    "name": "Benin",
+                    "code": "BJ"
+                },
+                {
+                    "name": "Bermuda",
+                    "code": "BM"
+                },
+                {
+                    "name": "Bhutan",
+                    "code": "BT"
+                },
+                {
+                    "name": "Bolivia",
+                    "code": "BO"
+                },
+                {
+                    "name": "Bosnia and Herzegovina",
+                    "code": "BA"
+                },
+                {
+                    "name": "Botswana",
+                    "code": "BW"
+                },
+                {
+                    "name": "Bouvet Island",
+                    "code": "BV"
+                },
+                {
+                    "name": "Brazil",
+                    "code": "BR"
+                },
+                {
+                    "name": "British Indian Ocean Territory",
+                    "code": "IO"
+                },
+                {
+                    "name": "Brunei Darussalam",
+                    "code": "BN"
+                },
+                {
+                    "name": "Bulgaria",
+                    "code": "BG"
+                },
+                {
+                    "name": "Burkina Faso",
+                    "code": "BF"
+                },
+                {
+                    "name": "Burundi",
+                    "code": "BI"
+                },
+                {
+                    "name": "Cambodia",
+                    "code": "KH"
+                },
+                {
+                    "name": "Cameroon",
+                    "code": "CM"
+                },
+                {
+                    "name": "Canada",
+                    "code": "CA"
+                },
+                {
+                    "name": "Cape Verde",
+                    "code": "CV"
+                },
+                {
+                    "name": "Cayman Islands",
+                    "code": "KY"
+                },
+                {
+                    "name": "Central African Republic",
+                    "code": "CF"
+                },
+                {
+                    "name": "Chad",
+                    "code": "TD"
+                },
+                {
+                    "name": "Chile",
+                    "code": "CL"
+                },
+                {
+                    "name": "China",
+                    "code": "CN"
+                },
+                {
+                    "name": "Christmas Island",
+                    "code": "CX"
+                },
+                {
+                    "name": "Cocos (Keeling) Islands",
+                    "code": "CC"
+                },
+                {
+                    "name": "Colombia",
+                    "code": "CO"
+                },
+                {
+                    "name": "Comoros",
+                    "code": "KM"
+                },
+                {
+                    "name": "Congo",
+                    "code": "CG"
+                },
+                {
+                    "name": "Congo, The Democratic Republic of the",
+                    "code": "CD"
+                },
+                {
+                    "name": "Cook Islands",
+                    "code": "CK"
+                },
+                {
+                    "name": "Costa Rica",
+                    "code": "CR"
+                },
+                {
+                    "name": "Cote D\"Ivoire",
+                    "code": "CI"
+                },
+                {
+                    "name": "Croatia",
+                    "code": "HR"
+                },
+                {
+                    "name": "Cuba",
+                    "code": "CU"
+                },
+                {
+                    "name": "Cyprus",
+                    "code": "CY"
+                },
+                {
+                    "name": "Czech Republic",
+                    "code": "CZ"
+                },
+                {
+                    "name": "Denmark",
+                    "code": "DK"
+                },
+                {
+                    "name": "Djibouti",
+                    "code": "DJ"
+                },
+                {
+                    "name": "Dominica",
+                    "code": "DM"
+                },
+                {
+                    "name": "Dominican Republic",
+                    "code": "DO"
+                },
+                {
+                    "name": "Ecuador",
+                    "code": "EC"
+                },
+                {
+                    "name": "Egypt",
+                    "code": "EG"
+                },
+                {
+                    "name": "El Salvador",
+                    "code": "SV"
+                },
+                {
+                    "name": "Equatorial Guinea",
+                    "code": "GQ"
+                },
+                {
+                    "name": "Eritrea",
+                    "code": "ER"
+                },
+                {
+                    "name": "Estonia",
+                    "code": "EE"
+                },
+                {
+                    "name": "Ethiopia",
+                    "code": "ET"
+                },
+                {
+                    "name": "Falkland Islands (Malvinas)",
+                    "code": "FK"
+                },
+                {
+                    "name": "Faroe Islands",
+                    "code": "FO"
+                },
+                {
+                    "name": "Fiji",
+                    "code": "FJ"
+                },
+                {
+                    "name": "Finland",
+                    "code": "FI"
+                },
+                {
+                    "name": "France",
+                    "code": "FR"
+                },
+                {
+                    "name": "French Guiana",
+                    "code": "GF"
+                },
+                {
+                    "name": "French Polynesia",
+                    "code": "PF"
+                },
+                {
+                    "name": "French Southern Territories",
+                    "code": "TF"
+                },
+                {
+                    "name": "Gabon",
+                    "code": "GA"
+                },
+                {
+                    "name": "Gambia",
+                    "code": "GM"
+                },
+                {
+                    "name": "Georgia",
+                    "code": "GE"
+                },
+                {
+                    "name": "Germany",
+                    "code": "DE"
+                },
+                {
+                    "name": "Ghana",
+                    "code": "GH"
+                },
+                {
+                    "name": "Gibraltar",
+                    "code": "GI"
+                },
+                {
+                    "name": "Greece",
+                    "code": "GR"
+                },
+                {
+                    "name": "Greenland",
+                    "code": "GL"
+                },
+                {
+                    "name": "Grenada",
+                    "code": "GD"
+                },
+                {
+                    "name": "Guadeloupe",
+                    "code": "GP"
+                },
+                {
+                    "name": "Guam",
+                    "code": "GU"
+                },
+                {
+                    "name": "Guatemala",
+                    "code": "GT"
+                },
+                {
+                    "name": "Guernsey",
+                    "code": "GG"
+                },
+                {
+                    "name": "Guinea",
+                    "code": "GN"
+                },
+                {
+                    "name": "Guinea-Bissau",
+                    "code": "GW"
+                },
+                {
+                    "name": "Guyana",
+                    "code": "GY"
+                },
+                {
+                    "name": "Haiti",
+                    "code": "HT"
+                },
+                {
+                    "name": "Heard Island and Mcdonald Islands",
+                    "code": "HM"
+                },
+                {
+                    "name": "Holy See (Vatican City State)",
+                    "code": "VA"
+                },
+                {
+                    "name": "Honduras",
+                    "code": "HN"
+                },
+                {
+                    "name": "Hong Kong",
+                    "code": "HK"
+                },
+                {
+                    "name": "Hungary",
+                    "code": "HU"
+                },
+                {
+                    "name": "Iceland",
+                    "code": "IS"
+                },
+                {
+                    "name": "India",
+                    "code": "IN"
+                },
+                {
+                    "name": "Indonesia",
+                    "code": "ID"
+                },
+                {
+                    "name": "Iran, Islamic Republic Of",
+                    "code": "IR"
+                },
+                {
+                    "name": "Iraq",
+                    "code": "IQ"
+                },
+                {
+                    "name": "Ireland",
+                    "code": "IE"
+                },
+                {
+                    "name": "Isle of Man",
+                    "code": "IM"
+                },
+                {
+                    "name": "Israel",
+                    "code": "IL"
+                },
+                {
+                    "name": "Italy",
+                    "code": "IT"
+                },
+                {
+                    "name": "Jamaica",
+                    "code": "JM"
+                },
+                {
+                    "name": "Japan",
+                    "code": "JP"
+                },
+                {
+                    "name": "Jersey",
+                    "code": "JE"
+                },
+                {
+                    "name": "Jordan",
+                    "code": "JO"
+                },
+                {
+                    "name": "Kazakhstan",
+                    "code": "KZ"
+                },
+                {
+                    "name": "Kenya",
+                    "code": "KE"
+                },
+                {
+                    "name": "Kiribati",
+                    "code": "KI"
+                },
+                {
+                    "name": "Korea, Democratic People\"S Republic of",
+                    "code": "KP"
+                },
+                {
+                    "name": "Korea, Republic of",
+                    "code": "KR"
+                },
+                {
+                    "name": "Kuwait",
+                    "code": "KW"
+                },
+                {
+                    "name": "Kyrgyzstan",
+                    "code": "KG"
+                },
+                {
+                    "name": "Lao People\"S Democratic Republic",
+                    "code": "LA"
+                },
+                {
+                    "name": "Latvia",
+                    "code": "LV"
+                },
+                {
+                    "name": "Lebanon",
+                    "code": "LB"
+                },
+                {
+                    "name": "Lesotho",
+                    "code": "LS"
+                },
+                {
+                    "name": "Liberia",
+                    "code": "LR"
+                },
+                {
+                    "name": "Libyan Arab Jamahiriya",
+                    "code": "LY"
+                },
+                {
+                    "name": "Liechtenstein",
+                    "code": "LI"
+                },
+                {
+                    "name": "Lithuania",
+                    "code": "LT"
+                },
+                {
+                    "name": "Luxembourg",
+                    "code": "LU"
+                },
+                {
+                    "name": "Macao",
+                    "code": "MO"
+                },
+                {
+                    "name": "Macedonia, The Former Yugoslav Republic of",
+                    "code": "MK"
+                },
+                {
+                    "name": "Madagascar",
+                    "code": "MG"
+                },
+                {
+                    "name": "Malawi",
+                    "code": "MW"
+                },
+                {
+                    "name": "Malaysia",
+                    "code": "MY"
+                },
+                {
+                    "name": "Maldives",
+                    "code": "MV"
+                },
+                {
+                    "name": "Mali",
+                    "code": "ML"
+                },
+                {
+                    "name": "Malta",
+                    "code": "MT"
+                },
+                {
+                    "name": "Marshall Islands",
+                    "code": "MH"
+                },
+                {
+                    "name": "Martinique",
+                    "code": "MQ"
+                },
+                {
+                    "name": "Mauritania",
+                    "code": "MR"
+                },
+                {
+                    "name": "Mauritius",
+                    "code": "MU"
+                },
+                {
+                    "name": "Mayotte",
+                    "code": "YT"
+                },
+                {
+                    "name": "Mexico",
+                    "code": "MX"
+                },
+                {
+                    "name": "Micronesia, Federated States of",
+                    "code": "FM"
+                },
+                {
+                    "name": "Moldova, Republic of",
+                    "code": "MD"
+                },
+                {
+                    "name": "Monaco",
+                    "code": "MC"
+                },
+                {
+                    "name": "Mongolia",
+                    "code": "MN"
+                },
+                {
+                    "name": "Montenegro",
+                    "code": "ME"
+                },
+                {
+                    "name": "Montserrat",
+                    "code": "MS"
+                },
+                {
+                    "name": "Morocco",
+                    "code": "MA"
+                },
+                {
+                    "name": "Mozambique",
+                    "code": "MZ"
+                },
+                {
+                    "name": "Myanmar",
+                    "code": "MM"
+                },
+                {
+                    "name": "Namibia",
+                    "code": "NA"
+                },
+                {
+                    "name": "Nauru",
+                    "code": "NR"
+                },
+                {
+                    "name": "Nepal",
+                    "code": "NP"
+                },
+                {
+                    "name": "Netherlands",
+                    "code": "NL"
+                },
+                {
+                    "name": "Netherlands Antilles",
+                    "code": "AN"
+                },
+                {
+                    "name": "New Caledonia",
+                    "code": "NC"
+                },
+                {
+                    "name": "New Zealand",
+                    "code": "NZ"
+                },
+                {
+                    "name": "Nicaragua",
+                    "code": "NI"
+                },
+                {
+                    "name": "Niger",
+                    "code": "NE"
+                },
+                {
+                    "name": "Nigeria",
+                    "code": "NG"
+                },
+                {
+                    "name": "Niue",
+                    "code": "NU"
+                },
+                {
+                    "name": "Norfolk Island",
+                    "code": "NF"
+                },
+                {
+                    "name": "Northern Mariana Islands",
+                    "code": "MP"
+                },
+                {
+                    "name": "Norway",
+                    "code": "NO"
+                },
+                {
+                    "name": "Oman",
+                    "code": "OM"
+                },
+                {
+                    "name": "Pakistan",
+                    "code": "PK"
+                },
+                {
+                    "name": "Palau",
+                    "code": "PW"
+                },
+                {
+                    "name": "Palestinian Territory, Occupied",
+                    "code": "PS"
+                },
+                {
+                    "name": "Panama",
+                    "code": "PA"
+                },
+                {
+                    "name": "Papua New Guinea",
+                    "code": "PG"
+                },
+                {
+                    "name": "Paraguay",
+                    "code": "PY"
+                },
+                {
+                    "name": "Peru",
+                    "code": "PE"
+                },
+                {
+                    "name": "Philippines",
+                    "code": "PH"
+                },
+                {
+                    "name": "Pitcairn",
+                    "code": "PN"
+                },
+                {
+                    "name": "Poland",
+                    "code": "PL"
+                },
+                {
+                    "name": "Portugal",
+                    "code": "PT"
+                },
+                {
+                    "name": "Puerto Rico",
+                    "code": "PR"
+                },
+                {
+                    "name": "Qatar",
+                    "code": "QA"
+                },
+                {
+                    "name": "Reunion",
+                    "code": "RE"
+                },
+                {
+                    "name": "Romania",
+                    "code": "RO"
+                },
+                {
+                    "name": "Russian Federation",
+                    "code": "RU"
+                },
+                {
+                    "name": "RWANDA",
+                    "code": "RW"
+                },
+                {
+                    "name": "Saint Helena",
+                    "code": "SH"
+                },
+                {
+                    "name": "Saint Kitts and Nevis",
+                    "code": "KN"
+                },
+                {
+                    "name": "Saint Lucia",
+                    "code": "LC"
+                },
+                {
+                    "name": "Saint Pierre and Miquelon",
+                    "code": "PM"
+                },
+                {
+                    "name": "Saint Vincent and the Grenadines",
+                    "code": "VC"
+                },
+                {
+                    "name": "Samoa",
+                    "code": "WS"
+                },
+                {
+                    "name": "San Marino",
+                    "code": "SM"
+                },
+                {
+                    "name": "Sao Tome and Principe",
+                    "code": "ST"
+                },
+                {
+                    "name": "Saudi Arabia",
+                    "code": "SA"
+                },
+                {
+                    "name": "Senegal",
+                    "code": "SN"
+                },
+                {
+                    "name": "Serbia",
+                    "code": "RS"
+                },
+                {
+                    "name": "Seychelles",
+                    "code": "SC"
+                },
+                {
+                    "name": "Sierra Leone",
+                    "code": "SL"
+                },
+                {
+                    "name": "Singapore",
+                    "code": "SG"
+                },
+                {
+                    "name": "Slovakia",
+                    "code": "SK"
+                },
+                {
+                    "name": "Slovenia",
+                    "code": "SI"
+                },
+                {
+                    "name": "Solomon Islands",
+                    "code": "SB"
+                },
+                {
+                    "name": "Somalia",
+                    "code": "SO"
+                },
+                {
+                    "name": "South Africa",
+                    "code": "ZA"
+                },
+                {
+                    "name": "South Georgia and the South Sandwich Islands",
+                    "code": "GS"
+                },
+                {
+                    "name": "Spain",
+                    "code": "ES"
+                },
+                {
+                    "name": "Sri Lanka",
+                    "code": "LK"
+                },
+                {
+                    "name": "Sudan",
+                    "code": "SD"
+                },
+                {
+                    "name": "Suriname",
+                    "code": "SR"
+                },
+                {
+                    "name": "Svalbard and Jan Mayen",
+                    "code": "SJ"
+                },
+                {
+                    "name": "Swaziland",
+                    "code": "SZ"
+                },
+                {
+                    "name": "Sweden",
+                    "code": "SE"
+                },
+                {
+                    "name": "Switzerland",
+                    "code": "CH"
+                },
+                {
+                    "name": "Syrian Arab Republic",
+                    "code": "SY"
+                },
+                {
+                    "name": "Taiwan, Province of China",
+                    "code": "TW"
+                },
+                {
+                    "name": "Tajikistan",
+                    "code": "TJ"
+                },
+                {
+                    "name": "Tanzania, United Republic of",
+                    "code": "TZ"
+                },
+                {
+                    "name": "Thailand",
+                    "code": "TH"
+                },
+                {
+                    "name": "Timor-Leste",
+                    "code": "TL"
+                },
+                {
+                    "name": "Togo",
+                    "code": "TG"
+                },
+                {
+                    "name": "Tokelau",
+                    "code": "TK"
+                },
+                {
+                    "name": "Tonga",
+                    "code": "TO"
+                },
+                {
+                    "name": "Trinidad and Tobago",
+                    "code": "TT"
+                },
+                {
+                    "name": "Tunisia",
+                    "code": "TN"
+                },
+                {
+                    "name": "Turkey",
+                    "code": "TR"
+                },
+                {
+                    "name": "Turkmenistan",
+                    "code": "TM"
+                },
+                {
+                    "name": "Turks and Caicos Islands",
+                    "code": "TC"
+                },
+                {
+                    "name": "Tuvalu",
+                    "code": "TV"
+                },
+                {
+                    "name": "Uganda",
+                    "code": "UG"
+                },
+                {
+                    "name": "Ukraine",
+                    "code": "UA"
+                },
+                {
+                    "name": "United Arab Emirates",
+                    "code": "AE"
+                },
+                {
+                    "name": "United Kingdom",
+                    "code": "GB"
+                },
+                {
+                    "name": "United States",
+                    "code": "US"
+                },
+                {
+                    "name": "United States Minor Outlying Islands",
+                    "code": "UM"
+                },
+                {
+                    "name": "Uruguay",
+                    "code": "UY"
+                },
+                {
+                    "name": "Uzbekistan",
+                    "code": "UZ"
+                },
+                {
+                    "name": "Vanuatu",
+                    "code": "VU"
+                },
+                {
+                    "name": "Venezuela",
+                    "code": "VE"
+                },
+                {
+                    "name": "Viet Nam",
+                    "code": "VN"
+                },
+                {
+                    "name": "Virgin Islands, British",
+                    "code": "VG"
+                },
+                {
+                    "name": "Virgin Islands, U.S.",
+                    "code": "VI"
+                },
+                {
+                    "name": "Wallis and Futuna",
+                    "code": "WF"
+                },
+                {
+                    "name": "Western Sahara",
+                    "code": "EH"
+                },
+                {
+                    "name": "Yemen",
+                    "code": "YE"
+                },
+                {
+                    "name": "Zambia",
+                    "code": "ZM"
+                },
+                {
+                    "name": "Zimbabwe",
+                    "code": "ZW"
+                }
+            ]
+            if (inputStyle == 'Country2Code') {
+                for (var i in jsonStuff) {
+                    if (input == jsonStuff[i]['name']) {
+                        return jsonStuff[i]['code']
+                    }
+                }
+            } else if (inputStyle == 'Code2Country') {
+                for (var i in jsonStuff) {
+                    if (input == jsonStuff[i]['code']) {
+                        return jsonStuff[i]['name']
+                    }
+                }
+            }
+            return null;
+        }
+
+        function parseInput(jsonData) {
+            for (var i in jsonData) {
+                if (jsonData[i].hasOwnProperty("billing") && jsonData[i].hasOwnProperty('billingMatch') && jsonData[i]
+                    .hasOwnProperty('card') && jsonData[i].hasOwnProperty('email') && jsonData[i].hasOwnProperty(
+                        'profileName') && jsonData[i].hasOwnProperty('shipping')) {
+                    return ('Dashe')
+                } else if (jsonData[i].hasOwnProperty("profileName") && jsonData[i].hasOwnProperty("email") && jsonData[
+                        i]
+                    .hasOwnProperty("billingAddress") && jsonData[i].hasOwnProperty("shippingAddress") && jsonData[i]
+                    .hasOwnProperty("profileName") && jsonData[i].hasOwnProperty("card") && jsonData[i].hasOwnProperty(
+                        "jigAddress") && jsonData[i].hasOwnProperty("oneCheckout") && jsonData[i].hasOwnProperty(
+                        "shipToBill")) {
+                    return ('Splashforce')
+                } else if (jsonData[i].hasOwnProperty("Billing") && jsonData[i].hasOwnProperty("CCNumber") && jsonData[
+                        i]
+                    .hasOwnProperty("CVV") && jsonData[i].hasOwnProperty("CardType") && jsonData[i].hasOwnProperty(
+                        "Country") && jsonData[i].hasOwnProperty("Email") && jsonData[i].hasOwnProperty("ExpMonth") &&
+                    jsonData[i].hasOwnProperty("ExpYear") && jsonData[i].hasOwnProperty("Name") && jsonData[i]
+                    .hasOwnProperty("Phone") && jsonData[i].hasOwnProperty("Same") && jsonData[i].hasOwnProperty(
+                        "Shipping")
+                ) {
+                    return ('Phantom')
+                } else if (jsonData[i].hasOwnProperty("billing") && jsonData[i].hasOwnProperty("card") && jsonData[i]
+                    .hasOwnProperty("cashOnDelivery") && jsonData[i].hasOwnProperty("dotTrick") && jsonData[i]
+                    .hasOwnProperty("email") && jsonData[i].hasOwnProperty("id") && jsonData[i].hasOwnProperty(
+                        "jigAddress") && jsonData[i].hasOwnProperty("jigPhone") && jsonData[i].hasOwnProperty(
+                        "email") &&
+                    jsonData[i].hasOwnProperty("limit") && jsonData[i].hasOwnProperty("limitCount") && jsonData[i]
+                    .hasOwnProperty("match") && jsonData[i].hasOwnProperty("shipping") && jsonData[i].hasOwnProperty(
+                        "title")) {
+                    return ('PD')
+                } else if (jsonData[i].hasOwnProperty("name") && jsonData[i].hasOwnProperty("email") && jsonData[i]
+                    .hasOwnProperty("phone") && jsonData[i].hasOwnProperty("sizes") && jsonData[i].hasOwnProperty(
+                        "modes") && jsonData[i].hasOwnProperty("taskAmount") && jsonData[i].hasOwnProperty(
+                        "singleCheckout") &&
+                    jsonData[i].hasOwnProperty("billingDifferent") && jsonData[i].hasOwnProperty("favorite") &&
+                    jsonData[i]
+                    .hasOwnProperty("card") && jsonData[i].hasOwnProperty("paypal") && jsonData[i].hasOwnProperty(
+                        "delivery") && jsonData[i].hasOwnProperty("billing")) {
+                    return ('Cyber')
+                } else if (jsonData.hasOwnProperty("groups") && jsonData.hasOwnProperty("proxies") && jsonData
+                    .hasOwnProperty("info")) {
+                    return ('Balko')
+                }
+            }
+        }
+
+        function convertToBasic(inputType, jsonData) {
+            var profiles = [];
+            if (inputType == 'Dashe') {
+                for (var i in jsonData) {
+                    profiles.push({
+                        "shipping": {
+                            "address": jsonData[i]['shipping']['address'],
+                            "line2": jsonData[i]['shipping']['apt'],
+                            "city": jsonData[i]['shipping']['city'],
+                            "country": jsonData[i]['shipping']['country'],
+                            "firstName": jsonData[i]['shipping']['firstName'],
+                            "lastName": jsonData[i]['shipping']['lastName'],
+                            "phone": jsonData[i]['shipping']['phoneNumber'],
+                            "state": jsonData[i]['shipping']['state'],
+                            "zip": jsonData[i]['shipping']['zipCode']
+                        },
+                        "billing": {
+                            "address": jsonData[i]['billing']['address'],
+                            "line2": jsonData[i]['billing']['apt'],
+                            "city": jsonData[i]['billing']['city'],
+                            "country": jsonData[i]['billing']['country'],
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "phone": jsonData[i]['billing']['phoneNumber'],
+                            "state": jsonData[i]['billing']['state'],
+                            "zip": jsonData[i]['billing']['zipCode']
+                        },
+                        "billingMatch": jsonData[i]['billingMatch'],
+                        "card": {
+                            "num": jsonData[i]['card']['number'],
+                            "month": jsonData[i]['card']['month'],
+                            "year": jsonData[i]['card']['year'],
+                            "cvc": jsonData[i]['card']['cvv'],
+                            "noc": jsonData[i]['card']['holder']
+                        },
+                        "email": jsonData[i]['email'],
+                        "profileName": jsonData[i]['profileName']
+                    })
+                }
+            } else if (inputType == 'Phantom') {
+                for (var i in jsonData) {
+                    profiles.push({
+                        "shipping": {
+                            "address": jsonData[i]['Shipping']['Address'],
+                            "line2": jsonData[i]['Shipping']['Apt'],
+                            "city": jsonData[i]['Shipping']['City'],
+                            "country": countryConverter('Code2Country', jsonData[i]['Country']),
+                            "firstName": jsonData[i]['Shipping']['FirstName'],
+                            "lastName": jsonData[i]['Shipping']['LastName'],
+                            "phone": jsonData[i]['Phone'],
+                            "state": jsonData[i]['Shipping']['State'],
+                            "zip": jsonData[i]['Shipping']['Zip']
+                        },
+                        "billing": {
+                            "address": jsonData[i]['Billing']['Address'],
+                            "line2": jsonData[i]['Billing']['Apt'],
+                            "city": jsonData[i]['Billing']['City'],
+                            "country": countryConverter('Code2Country', jsonData[i]['Country']),
+                            "firstName": jsonData[i]['Billing']['FirstName'],
+                            "lastName": jsonData[i]['Billing']['LastName'],
+                            "phone": jsonData[i]['Phone'],
+                            "state": jsonData[i]['Billing']['State'],
+                            "zip": jsonData[i]['Billing']['Zip']
+                        },
+                        "billingMatch": jsonData[i]['Same'],
+                        "card": {
+                            "num": jsonData[i]['CCNumber'],
+                            "month": jsonData[i]['ExpMonth'],
+                            "year": jsonData[i]['ExpYear'],
+                            "cvc": jsonData[i]['CVV'],
+                            "noc": jsonData[i]['Shipping']['FirstName'] + ' ' + jsonData[i]['Shipping'][
+                                'LastName'
+                            ]
+                        },
+                        "email": jsonData[i]['Email'],
+                        "profileName": jsonData[i]['Name']
+                    })
+                }
+            } else if (inputType == 'Splashforce') {
+                for (var i in jsonData) {
+                    profiles.push({
+                        "shipping": {
+                            "address": jsonData[i]['shippingAddress']['addressOne'],
+                            "line2": jsonData[i]['shippingAddress']['addressTwo'],
+                            "city": jsonData[i]['shippingAddress']['city'],
+                            "country": jsonData[i]['shippingAddress']['country'],
+                            "firstName": jsonData[i]['shippingAddress']['firstName'],
+                            "lastName": jsonData[i]['shippingAddress']['lastName'],
+                            "phone": jsonData[i]['shippingAddress']['phone'],
+                            "state": stateConverter('State2Code', jsonData[i]['shippingAddress']['state']),
+                            "zip": jsonData[i]['shippingAddress']['zip']
+                        },
+                        "billing": {
+                            "address": jsonData[i]['billingAddress']['addressOne'],
+                            "line2": jsonData[i]['billingAddress']['addressTwo'],
+                            "city": jsonData[i]['billingAddress']['city'],
+                            "country": jsonData[i]['billingAddress']['country'],
+                            "firstName": jsonData[i]['billingAddress']['firstName'],
+                            "lastName": jsonData[i]['billingAddress']['lastName'],
+                            "phone": jsonData[i]['billingAddress']['phone'],
+                            "state": stateConverter('State2Code', jsonData[i]['billingAddress']['state']),
+                            "zip": jsonData[i]['billingAddress']['zip']
+                        },
+                        "billingMatch": jsonData[i]['shipToBill'],
+                        "card": {
+                            "num": jsonData[i]['card']['cardNumber'],
+                            "month": jsonData[i]['card']['cardExpiryMonth'],
+                            "year": jsonData[i]['card']['cardExpiryYear'],
+                            "cvc": jsonData[i]['card']['cardCVV'],
+                            "noc": jsonData[i]['card']['cardHolderName']
+                        },
+                        "email": jsonData[i]['email'],
+                        "profileName": jsonData[i]['profileName']
+                    })
+                }
+            } else if (inputType == 'PD') {
+                for (var i in jsonData) {
+                    profiles.push({
+                        "shipping": {
+                            "address": jsonData[i]['shipping']['address1'],
+                            "line2": jsonData[i]['shipping']['address2'],
+                            "city": jsonData[i]['shipping']['city'],
+                            "country": jsonData[i]['shipping']['country'],
+                            "firstName": jsonData[i]['shipping']['firstName'],
+                            "lastName": jsonData[i]['shipping']['lastName'],
+                            "phone": jsonData[i]['shipping']['phone'],
+                            "state": stateConverter('State2Code', jsonData[i]['shipping']['state']),
+                            "zip": jsonData[i]['shipping']['zipcode']
+                        },
+                        "billing": {
+                            "address": jsonData[i]['billing']['address1'],
+                            "line2": jsonData[i]['billing']['address2'],
+                            "city": jsonData[i]['billing']['city'],
+                            "country": jsonData[i]['billing']['country'],
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "phone": jsonData[i]['billing']['phone'],
+                            "state": stateConverter('State2Code', jsonData[i]['billing']['state']),
+                            "zip": jsonData[i]['billing']['zipcode']
+                        },
+                        "billingMatch": jsonData[i]['match'],
+                        "card": {
+                            "num": jsonData[i]['card']['number'],
+                            "month": jsonData[i]['card']['expire'].split('/')[0],
+                            "year": '20' + jsonData[i]['card']['expire'].split('/')[1],
+                            "cvc": jsonData[i]['card']['code'],
+                            "noc": jsonData[i]['card']['name']
+                        },
+                        "email": jsonData[i]['email'],
+                        "profileName": jsonData[i]['title']
+                    })
+                }
+            } else if (inputType == 'Cyber') {
+                for (var i in jsonData) {
+                    profiles.push({
+                        "shipping": {
+                            "address": jsonData[i]['delivery']['address1'],
+                            "line2": jsonData[i]['delivery']['address2'],
+                            "city": jsonData[i]['delivery']['city'],
+                            "country": jsonData[i]['delivery']['country'],
+                            "firstName": jsonData[i]['delivery']['firstName'],
+                            "lastName": jsonData[i]['delivery']['lastName'],
+                            "phone": jsonData[i]['phone'],
+                            "state": stateConverter('State2Code', jsonData[i]['delivery']['state']),
+                            "zip": jsonData[i]['delivery']['zip']
+                        },
+                        "billing": {
+                            "address": jsonData[i]['billing']['address1'],
+                            "line2": jsonData[i]['billing']['address2'],
+                            "city": jsonData[i]['billing']['city'],
+                            "country": jsonData[i]['billing']['country'],
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "phone": jsonData[i]['phone'],
+                            "state": stateConverter('State2Code', jsonData[i]['billing']['state']),
+                            "zip": jsonData[i]['billing']['zip']
+                        },
+                        "billingMatch": !jsonData[i]['billingDifferent'],
+                        "card": {
+                            "num": jsonData[i]['card']['number'].replaceAll(' ', ''),
+                            "month": jsonData[i]['card']['expiryMonth'],
+                            "year": jsonData[i]['card']['expiryYear'],
+                            "cvc": jsonData[i]['card']['cvv'],
+                            "noc": jsonData[i]['delivery']['firstName'] + ' ' + jsonData[i]['delivery'][
+                                'lastName'
+                            ]
+                        },
+                        "email": jsonData[i]['email'],
+                        "profileName": jsonData[i]['name']
+                    })
+                }
+            } else if (inputType == 'Balko') {
+                for (var i in jsonData['info']) {
+                    console.log(jsonData['info'][i])
+                    if (jsonData['info'][i].hasOwnProperty('id') && jsonData['info'][i].hasOwnProperty('firstname') &&
+                        jsonData[
+                            'info'][i].hasOwnProperty('lastname') && jsonData['info'][i].hasOwnProperty('email')) {
+                        try {
+                            profiles.push({
+                                "shipping": {
+                                    "address": jsonData['info'][i]['add1'],
+                                    "line2": jsonData['info'][i]['add2'],
+                                    "city": jsonData['info'][i]['city'],
+                                    "country": jsonData['info'][i]['country'],
+                                    "firstName": jsonData['info'][i]['firstname'],
+                                    "lastName": jsonData['info'][i]['lastname'],
+                                    "phone": jsonData['info'][i]['phone'],
+                                    "state": stateConverter('State2Code', jsonData['info'][i]['state']),
+                                    "zip": jsonData['info'][i]['zip']
+                                },
+                                "billing": {
+                                    "address": jsonData['info'][i]['badd1'],
+                                    "line2": jsonData['info'][i]['badd2'],
+                                    "city": jsonData['info'][i]['bcity'],
+                                    "country": jsonData['info'][i]['bcountry'],
+                                    "firstName": jsonData['info'][i]['bfirstname'],
+                                    "lastName": jsonData['info'][i]['blastname'],
+                                    "phone": jsonData['info'][i]['phone'],
+                                    "state": stateConverter('State2Code', jsonData['info'][i]['bstate']),
+                                    "zip": jsonData['info'][i]['bzip']
+                                },
+                                "billingMatch": null,
+                                "card": {
+                                    "num": jsonData['info'][i]['cc'],
+                                    "month": jsonData['info'][i]['expm'],
+                                    "year": jsonData['info'][i]['expy'],
+                                    "cvc": jsonData['info'][i]['ccv'],
+                                    "noc": jsonData['info'][i]['ccfirst'] + ' ' + jsonData['info'][i]['cclast']
+                                },
+                                "email": jsonData['info'][i]['email'],
+                                "profileName": jsonData['info'][i]['id']
+                            })
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }
+            }
+            return profiles;
+        }
+
+        function convertFromBasic(outputType, jsonData) {
+            if (outputType == 'Dashe') {
+                var outputJSON = {};
+                for (var i in jsonData) {
+                    outputJSON[jsonData[i]['profileName']] = {
+                        "billing": {
+                            "address": jsonData[i]['billing']['address'],
+                            "apt": jsonData[i]['billing']['line2'],
+                            "city": jsonData[i]['billing']['city'],
+                            "country": jsonData[i]['billing']['country'],
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "phoneNumber": jsonData[i]['billing']['phone'],
+                            "state": jsonData[i]['billing']['state'],
+                            "zipCode": jsonData[i]['billing']['zip']
+                        },
+                        "billingMatch": jsonData[i]['billingMatch'],
+                        "card": {
+                            "cvv": jsonData[i]['card']['cvc'],
+                            "holder": jsonData[i]['card']['noc'],
+                            "month": jsonData[i]['card']['month'],
+                            "number": jsonData[i]['card']['num'],
+                            "year": jsonData[i]['card']['year']
+                        },
+                        "email": jsonData[i]['email'],
+                        "profileName": jsonData[i]['profileName'],
+                        "shipping": {
+                            "address": jsonData[i]['shipping']['address'],
+                            "apt": jsonData[i]['shipping']['line2'],
+                            "city": jsonData[i]['shipping']['city'],
+                            "country": jsonData[i]['shipping']['country'],
+                            "firstName": jsonData[i]['shipping']['firstName'],
+                            "lastName": jsonData[i]['shipping']['lastName'],
+                            "phoneNumber": jsonData[i]['shipping']['phone'],
+                            "state": jsonData[i]['shipping']['state'],
+                            "zipCode": jsonData[i]['shipping']['zip']
+                        },
+                    }
+                }
+            } else if (outputType == 'Splashforce') {
+                var outputJSON = [];
+                for (var i in jsonData) {
+                    outputJSON.push({
+                        "profileName": jsonData[i]['profileName'],
+                        "email": jsonData[i]['email'],
+                        "billingAddress": {
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "addressOne": jsonData[i]['billing']['address'],
+                            "addressTwo": jsonData[i]['billing']['line2'],
+                            "city": jsonData[i]['billing']['city'],
+                            "state": stateConverter('Code2State', jsonData[i]['billing']['state']),
+                            "zip": jsonData[i]['billing']['zip'],
+                            "country": jsonData[i]['billing']['country'],
+                            "phone": jsonData[i]['billing']['phone']
+                        },
+                        "shippingAddress": {
+                            "firstName": jsonData[i]['shipping']['firstName'],
+                            "lastName": jsonData[i]['shipping']['lastName'],
+                            "addressOne": jsonData[i]['shipping']['address'],
+                            "addressTwo": jsonData[i]['shipping']['line2'],
+                            "city": jsonData[i]['shipping']['city'],
+                            "state": stateConverter('Code2State', jsonData[i]['shipping']['state']),
+                            "zip": jsonData[i]['shipping']['zip'],
+                            "country": jsonData[i]['shipping']['country'],
+                            "phone": jsonData[i]['shipping']['phone']
+                        },
+                        "card": {
+                            "cardHolderName": jsonData[i]['card']['noc'],
+                            "cardNumber": jsonData[i]['card']['num'],
+                            "cardExpiryMonth": jsonData[i]['card']['month'],
+                            "cardExpiryYear": jsonData[i]['card']['year'],
+                            "cardCVV": jsonData[i]['card']['cvc']
+                        },
+                        "jigAddress": false,
+                        "oneCheckout": false,
+                        "shipToBill": jsonData[i]['card']['billingMatch']
+                    })
+                }
+            } else if (outputType == 'Phantom') {
+                var outputJSON = [];
+                for (var i in jsonData) {
+                    var cardType = null;
+                    if (jsonData[i]['card']['num'][0] == '3') {
+                        cardType = 'amex'
+                    } else if (jsonData[i]['card']['num'][0] == '4') {
+                        cardType = 'visa'
+                    } else if (jsonData[i]['card']['num'][0] == '5') {
+                        cardType = 'master'
+                    } else if (jsonData[i]['card']['num'][0] == '6') {
+                        cardType = 'discover'
+                    }
+                    outputJSON.push({
+                        "Billing": {
+                            "Address": jsonData[i]['billing']['address'],
+                            "Apt": jsonData[i]['billing']['line2'],
+                            "City": jsonData[i]['billing']['city'],
+                            "FirstName": jsonData[i]['billing']['firstName'],
+                            "LastName": jsonData[i]['billing']['lastName'],
+                            "State": jsonData[i]['billing']['state'],
+                            "Zip": jsonData[i]['billing']['zip']
+                        },
+                        "CCNumber": jsonData[i]['card']['num'],
+                        "CVV": jsonData[i]['card']['cvc'],
+                        "CardType": cardType,
+                        "Country": countryConverter('Country2Code', jsonData[i]['shipping']['country']),
+                        "Email": jsonData[i]['email'],
+                        "ExpMonth": jsonData[i]['card']['month'],
+                        "ExpYear": jsonData[i]['card']['year'],
+                        "Name": jsonData[i]['profileName'],
+                        "Phone": jsonData[i]['shipping']['phone'],
+                        "Same": jsonData[i]['billingMatch'],
+                        "Shipping": {
+                            "Address": jsonData[i]['shipping']['address'],
+                            "Apt": jsonData[i]['shipping']['line2'],
+                            "City": jsonData[i]['shipping']['city'],
+                            "FirstName": jsonData[i]['shipping']['firstName'],
+                            "LastName": jsonData[i]['shipping']['lastName'],
+                            "State": jsonData[i]['shipping']['state'],
+                            "Zip": jsonData[i]['shipping']['zip']
+                        },
+                    })
+                }
+            } else if (outputType == 'PD') {
+                var outputJSON = [];
+                for (var i in jsonData) {
+                    outputJSON.push({
+                        "billing": {
+                            "address1": jsonData[i]['billing']['address'],
+                            "address2": jsonData[i]['billing']['line2'],
+                            "city": jsonData[i]['billing']['city'],
+                            "country": jsonData[i]['billing']['country'],
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "phone": jsonData[i]['billing']['phone'],
+                            "state": stateConverter('Code2State', jsonData[i]['billing']['state']),
+                            "zipcode": jsonData[i]['billing']['zip']
+                        },
+                        "card": {
+                            "code": jsonData[i]['card']['cvc'],
+                            "expire": jsonData[i]['card']['month'] + '/' + jsonData[i]['card']['year'][2] +
+                                jsonData[i]['card']['year'][3],
+                            "name": jsonData[i]['card']['noc'],
+                            "number": jsonData[i]['card']['num']
+                        },
+                        "cashOnDelivery": false,
+                        "dotTrick": false,
+                        "email": jsonData[i]['email'],
+                        "id": makeid(10),
+                        "jigAddress": false,
+                        "jigPhone": false,
+                        "limit": false,
+                        "limitCount": "",
+                        "match": jsonData[i]['billingMatch'],
+                        "shipping": {
+                            "address1": jsonData[i]['shipping']['address'],
+                            "address2": jsonData[i]['shipping']['line2'],
+                            "city": jsonData[i]['shipping']['city'],
+                            "country": jsonData[i]['shipping']['country'],
+                            "firstName": jsonData[i]['shipping']['firstName'],
+                            "lastName": jsonData[i]['shipping']['lastName'],
+                            "phone": jsonData[i]['shipping']['phone'],
+                            "state": stateConverter('Code2State', jsonData[i]['shipping']['state']),
+                            "zipcode": jsonData[i]['shipping']['zip']
+                        },
+                        "title": jsonData[i]['profileName']
+                    })
+                }
+            } else if (outputType == 'Cyber') {
+                var outputJSON = [];
+                for (var i in jsonData) {
+                    if (jsonData[i]['card']['num'] == 16) {
+                        var sendCC = jsonData[i]['card']['num'][0] + jsonData[i]['card']['num'][1] + jsonData[
+                                i]['card']['num'][2] + jsonData[i]['card']['num'][3] + " " + jsonData[i][
+                                'card'
+                            ]['num'][4] + jsonData[i]['card']['num'][5] + jsonData[i]['card']['num'][6] +
+                            jsonData[i]['card']['num'][7] + " " + jsonData[i]['card']['num'][8] + jsonData[
+                                i]['card']['num'][9] + jsonData[i]['card']['num'][10] + jsonData[i]['card'][
+                                'num'
+                            ][11] + " " + jsonData[i]['card']['num'][12] + jsonData[i]['card']['num'][13] +
+                            jsonData[i]['card']['num'][14] + jsonData[i]['card']['num'][15]
+                    } else if (jsonData[i]['card']['num'] == 15) {
+                        var sendCC = jsonData[i]['card']['num'][0] + jsonData[i]['card']['num'][1] + jsonData[
+                                i]['card']['num'][2] + jsonData[i]['card']['num'][3] + " " + jsonData[i][
+                                'card'
+                            ]['num'][4] + jsonData[i]['card']['num'][5] + jsonData[i]['card']['num'][6] +
+                            jsonData[i]['card']['num'][7] + jsonData[i]['card']['num'][8] + jsonData[
+                                i]['card']['num'][9] + " " + jsonData[i]['card']['num'][10] + jsonData[i]['card'][
+                                'num'
+                            ][11] + jsonData[i]['card']['num'][12] + jsonData[i]['card']['num'][13] +
+                            jsonData[i]['card']['num'][14]
+                    }
+                    outputJSON.push({
+                        "name": jsonData[i]['profileName'],
+                        "email": jsonData[i]['email'],
+                        "phone": jsonData[i]['shipping']['phone'],
+                        "sizes": ["Random"],
+                        "modes": ["Fast"],
+                        "taskAmount": 1,
+                        "singleCheckout": false,
+                        "billingDifferent": !jsonData[i]['billingMatch'],
+                        "favorite": false,
+                        "card": {
+                            "number": sendCC,
+                            "expiryMonth": jsonData[i]['card']['month'],
+                            "expiryYear": jsonData[i]['card']['year'],
+                            "cvv": jsonData[i]['card']['cvc']
+                        },
+                        "paypal": {
+                            "email": null,
+                            "password": null
+                        },
+                        "delivery": {
+                            "firstName": jsonData[i]['shipping']['firstName'],
+                            "lastName": jsonData[i]['shipping']['lastName'],
+                            "address1": jsonData[i]['shipping']['address'],
+                            "address2": jsonData[i]['shipping']['line2'],
+                            "zip": jsonData[i]['shipping']['zip'],
+                            "city": jsonData[i]['shipping']['city'],
+                            "country": jsonData[i]['shipping']['country'],
+                            "state": stateConverter('Code2State', jsonData[i]['shipping']['state'])
+                        },
+                        "billing": {
+                            "firstName": jsonData[i]['billing']['firstName'],
+                            "lastName": jsonData[i]['billing']['lastName'],
+                            "address1": jsonData[i]['billing']['address'],
+                            "address2": jsonData[i]['billing']['line2'],
+                            "zip": jsonData[i]['billing']['zip'],
+                            "city": jsonData[i]['billing']['city'],
+                            "country": jsonData[i]['billing']['country'],
+                            "state": stateConverter('Code2State', jsonData[i]['billing']['state'])
+                        },
+                    })
+                }
+            } else if (outputType == 'Balko') {
+                var outputJSON = {
+                    "groups": [],
+                    "proxies": [],
+                    "info": [{
+                        "qtSize": "",
+                        "qtProfile": ""
+                    }, {
+                        "proxy1": "",
+                        "proxy2": "",
+                        "proxy3": "",
+                        "proxy4": "",
+                        "proxy5": ""
+                    }]
+                };
+                for (var i in jsonData) {
+                    if (jsonData[i]['billingMatch']) {
+                        var bfirstname = jsonData[i]['shipping']['firstName']
+                        var blastname = jsonData[i]['shipping']['lastName']
+                        var badd1 = jsonData[i]['shipping']['address']
+                        var badd2 = jsonData[i]['shipping']['line2']
+                        var bstate = stateConverter('Code2State', jsonData[i]['shipping']['state'])
+                        var bzip = jsonData[i]['shipping']['zip']
+                        var bcountry = jsonData[i]['shipping']['country']
+                        var bcity = jsonData[i]['shipping']['city']
+                    } else {
+                        var bfirstname = jsonData[i]['billing']['firstName']
+                        var blastname = jsonData[i]['billing']['lastName']
+                        var badd1 = jsonData[i]['billing']['address']
+                        var badd2 = jsonData[i]['billing']['line2']
+                        var bstate = stateConverter('Code2State', jsonData[i]['billing']['state'])
+                        var bzip = jsonData[i]['billing']['zip']
+                        var bcountry = jsonData[i]['billing']['country']
+                        var bcity = jsonData[i]['billing']['city']
+                    }
+                    outputJSON['info'].push({
+                        "id": jsonData[i]['profileName'],
+                        "firstname": jsonData[i]['shipping']['firstName'],
+                        "lastname": jsonData[i]['shipping']['lastName'],
+                        "email": jsonData[i]['email'],
+                        "phone": jsonData[i]['shipping']['phone'],
+                        "add1": jsonData[i]['shipping']['address'],
+                        "add2": jsonData[i]['shipping']['line2'],
+                        "state": stateConverter('Code2State', jsonData[i]['shipping']['state']),
+                        "zip": jsonData[i]['shipping']['zip'],
+                        "country": jsonData[i]['shipping']['country'],
+                        "city": jsonData[i]['shipping']['city'],
+                        "ccfirst": jsonData[i]['card']['noc'].split(' ')[0],
+                        "cclast": jsonData[i]['card']['noc'].split(' ')[1],
+                        "cc": jsonData[i]['card']['num'],
+                        "expm": jsonData[i]['card']['month'],
+                        "expy": jsonData[i]['card']['year'],
+                        "ccv": jsonData[i]['card']['cvc'],
+                        "oneCheckout": false,
+                        "bfirstname": bfirstname,
+                        "blastname": blastname,
+                        "badd1": badd1,
+                        "badd2": badd2,
+                        "bstate": bstate,
+                        "bzip": bzip,
+                        "bcountry": bcountry,
+                        "bcity": bcity
+                    })
+                }
+            }
+            return outputJSON;
+        }
+
+        function doStuff(outputType) {
+            var inputType = parseInput(JSON.parse($('textarea#inputProfiles')[0].value))
+            console.log(inputType)
+            var basedProfiles = convertToBasic(inputType, JSON.parse($('textarea#inputProfiles')[0].value))
+            var outputProfiles = convertFromBasic(outputType, basedProfiles)
+            $('textarea#outputProfiles')[0].value = JSON.stringify(outputProfiles)
+            $('#modal-title')[0].innerText = `Profile Data Successfully Converter from ${inputType} To ${outputType}`
+            $('div#exampleModalCenter.modal').modal('toggle')
+
+        }
+    </script>
+</body>
+
+</html>
