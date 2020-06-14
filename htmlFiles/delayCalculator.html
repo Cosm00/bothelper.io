@@ -1,0 +1,76 @@
+<html>
+<script src="/bootstrap/jquery.min.js"></script>
+<script src="/bootstrap/popper.min.js"></script>
+<link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+<script src="/bootstrap/bootstrap.min.js"></script>
+<meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+<head>
+    <script data-ad-client="ca-pub-2140324121393782" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-169358948-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-169358948-1');
+    </script>  
+    <title>Shopify Delay Calculator</title>
+</head>
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<body style="background-color: #333!important;">
+    <div class="row h-100">
+        <div class="col-sm-12 my-auto">
+            <div style="max-width: 40rem;margin: 0 auto;float: none;margin-bottom: 10px;padding-left:.5rem;padding-right:.5rem;">
+                <div class="card" style="margin-bottom:1rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Shopify Delay Calculator</h5>
+                        <p class="card-text">Shopify seems to ban a single IP address if it is used on their servers more often than around 3500MS. To maintain a bit of wiggle room, this calculator uses 4000MS as the static variable to calculate unbannable delays.</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><input data-toggle="tooltip" data-placement="top" title="Amount of Tasks" id="taskAmount" type="number" class="form-control" placeholder="Number of Tasks" min="1" onchange="calculator()"></li>
+                        <li class="list-group-item"><input data-toggle="tooltip" data-placement="top" title="Amount of Proxies" id="proxyAmount" type="number" class="form-control" placeholder="Number of Proxies" min="1" onchange="calculator()"></li>
+                    </ul>
+                    <div class="card-body text-right">
+                        <h3 id="banTime">∞MS</h3>
+                    </div>
+                </div>
+
+                <div class="card text-center" style="margin-bottom:1rem;">
+                    <a href="https://www.popfindr.com"><img style="max-height: 100%;max-width: 100%;"
+                            src="https://i.imgur.com/zccv1w7.png"></a>
+                    <div class="card-footer">
+                        Contact about@popfindr.com to inquire about purchasing Ad Space.
+                    </div>
+                </div>              
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    function calculator(){
+        var defaultBan = 4000
+        var taskAmount = document.getElementById('taskAmount').value
+        var proxyAmount = document.getElementById('proxyAmount').value
+
+        var banTime = Math.round((defaultBan * taskAmount) / proxyAmount)
+        document.getElementById("banTime").innerText = `${banTime}MS`
+    }
+</script>
+
+</html>

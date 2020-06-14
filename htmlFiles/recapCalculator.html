@@ -1,0 +1,13 @@
+<html>
+<script src="https://www.google.com/recaptcha/api.js?render=6LexCQAVAAAAAMdxj3r54v9S6oBasZf1s8_4th7c"></script>
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('6LexCQAVAAAAAMdxj3r54v9S6oBasZf1s8_4th7c', {
+            action: 'homepage'
+        }).then(function (token) {
+            document.location.href = `/interpretScore?token=${token}`
+        });
+    });
+</script>
+
+</html>

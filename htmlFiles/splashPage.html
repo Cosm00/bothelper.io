@@ -1,9 +1,10 @@
 <html>
-
 <script src="/bootstrap/jquery.min.js"></script>
 <script src="/bootstrap/popper.min.js"></script>
 <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
 <script src="/bootstrap/bootstrap.min.js"></script>
+<meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
 
 <style>
     .btn-danger,
@@ -12,24 +13,160 @@
     .btn-danger:visited {
         color: #000000;
     }
+
     .btn-primary,
     .btn-primary:hover,
     .btn-primary:active,
     .btn-primary:visited {
         color: #000000;
     }
+
+    .btn-success,
+    .btn-success:hover,
+    .btn-success:active,
+    .btn-success:visited {
+        color: #000000;
+    }
 </style>
 
-<div class="jumbotron" style="max-width:800px;">
-    <h1 class="display-4">bothelper.io</h1>
-    <p class="lead">For all your needs automating the e-commerce webstore world.</p>
-    <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-danger">Profile Converter</button>
-        <button type="button" class="btn btn-warning">Shopify Delay Calculator</button>
-        <button type="button" class="btn btn-primary">ReCaptcha V3 Score Checker</button>
-      </div>
-  </div>
+<head>
+    <script data-ad-client="ca-pub-2140324121393782" async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <title>BotHelper.io</title>
+</head>
+
+<body style="background-color: #333!important;">
+    <div class="row h-100">
+        <div class="col-sm-12 my-auto">
+            <div
+                style="max-width: 40rem;margin: 0 auto;float: none;margin-bottom: 10px;padding-left:.5rem;padding-right:.5rem;">
+                <div class="jumbotron" style="margin-top:1rem;margin-bottom:1rem!important;">
+                    <img src="https://i.imgur.com/lNI19Yz.png" style="max-width:100%;max-height:100%;">
+                    <p style="padding-top:1rem;" class="lead text-center">For all your needs automating the e-commerce world.</p>
+                    <hr class="my-4">
+                    <p>Please use only privacy cards in the profile converter. Although no information is EVER stored on
+                        our
+                        servers, we are aware that the web is everychanging and always vulnuerable to new methodology.
+                        We
+                        use barebones JavaScript (+jQuery and BootStrap) on the Profile Conversion page so that nothing
+                        fishy should ever be running in your browser on that webpage, if you'd like to have a look
+                        yourself... the entire webpage sourcecode is available @ <a
+                            href="https://github.com/Cosm00/bothelper.io">https://github.com/Cosm00/bothelper.io</a> for
+                        you
+                        to comb thru or download and run locally!</p>
+
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-danger" onclick="window.location.href='/converter'">Profile
+                            Converter</button>
+                        <button type="button" class="btn btn-success" onclick="window.location.href='/delay'">Shopify
+                            Delay Calculator</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='/recap'">ReCaptcha
+                            V3
+                            Score Checker</button>
+                    </div>
+
+                    <div class="modal fade text-center" id="modalCashApp" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 id="modal-title" class="modal-title">Scan the QR Code in CashApp</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div
+                                        style="background: rgb(255, 255, 255);padding: 40px;box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 40px;border-radius: 40px;">
+                                        <a href="https://cash.app/$popfindr"><img
+                                                style="max-width: 100%;max-height: 100%;"
+                                                src="https://cash.app/qr/$PopFindr?size=288&margin=0"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal fade text-center" id="modalBTC" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 id="modal-title" class="modal-title">Scan the QR Code to send BTC</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div
+                                        style="background: rgb(255, 255, 255);padding: 10px;box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 40px;border-radius: 40px;">
+                                        <a href="bitcoin:184fucwhPcUohQp4LxZ95jqeiDUci3xXpr"><img
+                                                style="max-width: 100%;max-height: 100%;"
+                                                src="https://i.imgur.com/Ytfvt1E.png"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                        <input type="hidden" name="cmd" value="_donations" />
+                        <input type="hidden" name="business" value="funkofindr@gmail.com" />
+                        <input type="hidden" name="currency_code" value="USD" />
+                    </form>
+                </div>
+
+                <div class="card" style="margin-bottom:1rem;">
+                    <div class="card-body">
+                        <p>Donations help a ton. If this saved you a bit of time and headache please consider buying me
+                            a
+                            coffee. Click the links below.</p>
+
+                        <div class="btn-group mr-2" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-primary"
+                                onclick="$('#paypalForm').submit()">PayPal</button>
+                            <button type="button" class="btn btn-success"
+                                onclick="$('#modalCashApp').modal('toggle')">CashApp</button>
+                            <button type="button" class="btn btn-warning" onclick="$('#modalBTC').modal('toggle')">₿
+                                BTC</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card text-center" style="margin-bottom:1rem;">
+                    <a href="https://www.popfindr.com"><img style="max-height: 100%;max-width: 100%;"
+                            src="https://i.imgur.com/zccv1w7.png"></a>
+                    <div class="card-footer">
+                        Contact about@popfindr.com to inquire about purchasing Ad Space.
+                    </div>
+                </div>
+
+                <div class="card" style="background-color:#FFFFFF00;margin-bottom:1rem;">
+                    <iframe src="https://discordapp.com/widget?id=718242240778076182&theme=dark"
+                        allowtransparency="true" frameborder="0" height="400px"></iframe>
+                </div>
+
+                <div class="card">
+                    <a class="twitter-timeline" href="https://twitter.com/BotHelperIO?ref_src=twsrc%5Etfw">Tweets by
+                        BotHelper.io</a>
+                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    function calculator() {
+        var defaultBan = 4000
+        var taskAmount = document.getElementById('taskAmount').value
+        var proxyAmount = document.getElementById('proxyAmount').value
+
+        var banTime = Math.round((defaultBan * taskAmount) / proxyAmount)
+        document.getElementById("banTime").innerText = `${banTime}MS`
+    }
+</script>
 
 </html>

@@ -4,6 +4,20 @@
 <script src="/bootstrap/popper.min.js"></script>
 <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
 <script src="/bootstrap/bootstrap.min.js"></script>
+<meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+
+<head>
+<title>Profile Converter</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-169358948-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-169358948-1');
+</script>  
+</head>
 
 <style>
     .btn-dashe,
@@ -52,29 +66,72 @@
         background-color: #292d3d;
         color: #FFFFFF;
     }
+
+    .btn-swft,
+    .btn-swft:hover,
+    .btn-swft:active,
+    .btn-swft:visited {
+        background-color: #ff5c5d;
+    }
 </style>
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 <body style="background-color: #333!important;">
     <div class="row h-100">
         <div class="col-sm-12 my-auto text-center">
-            <div style="width: 40rem;margin: 0 auto;float: none;margin-bottom: 10px;">
+            <div style="max-width: 40rem;margin: 0 auto;float: none;padding-left:.5rem;padding-right:.5rem;">
+                <div class="card-group" style="padding-top:1rem;">
+                    <div class="card" style="margin-bottom: 1rem!important;">
+                        <div class="card-body">
+                            <a href="https://docs.google.com/forms/d/1fLjkdZ0UVBuPu3ExT5vOkID43WvzB_RSLMv4mIRfKMk/copy">Copy
+                                Google Form</a>
+                        </div>
+                    </div>
+                    <div class="card" style="margin-bottom: 1rem!important;">
+                        <div class="card-body">
+                            <a
+                                href="https://drive.google.com/file/d/1P2A1_dPeZZ553I2FxDpxKCoivv7m96TK/view?usp=sharing">Download
+                                CSV Template</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="card text-center">
                     <div class="card-header">
                         Input Profile Data Here
                     </div>
                     <div class="card-body">
                         <textarea class="form-control" id="inputProfiles" rows="20"
-                            placeholder="Drag and Drop or Paste File Content's here."></textarea>
+                            placeholder="Drag and Drop or Paste File Content's here.&#10;&#10;Most bots exported JSON files should work, you can also use the CSV template and Google Form above to collect data. Please use privacy cards to be safe!&#10;&#10;Everything is converted in your browser with JavaScript so that data never touches our servers, however we would like you to use privacy cards just to be safe."></textarea>
                     </div>
                     <div class="card-footer">
-                        <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
-                            <button type="button" class="btn btn-dashe" onclick="doStuff('Dashe')">Dashe</button>
-                            <button type="button" class="btn btn-sf" onclick="doStuff('Splashforce')">SF</button>
-                            <button type="button" class="btn btn-phantom" onclick="doStuff('Phantom')">Phantom</button>
-                            <button type="button" class="btn btn-pd" onclick="doStuff('PD')">PD</button>
-                            <button type="button" class="btn btn-cyber" onclick="doStuff('Cyber')">Cyber</button>
-                            <button type="button" class="btn btn-balko" onclick="doStuff('Balko')">Balko</button>
-                        </div>
+                        <div class="input-group">
+                            <select class="custom-select" id="inputConversion" aria-label="Example select with button addon">
+                              <option selected>Convert To</option>
+                              <option value="Balko">Balko</option>
+                              <option value="Cyber">Cyber</option>
+                              <option value="Dashe">Dashe</option>
+                              <option value="Phantom">Phantom</option>
+                              <option value="PD">Project Destroyer</option>
+                              <option value="Splashforce">SplashForce</option>
+                              <option value="SWFT">SWFT</option>
+                            </select>
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="button" onclick="doStuff(document.getElementById('inputConversion').value)">Convert</button>
+                            </div>
+                          </div>
                     </div>
                 </div>
             </div>
@@ -94,7 +151,8 @@
                             <textarea class="form-control" id="outputProfiles" rows="20"></textarea>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="saveTextAsFile()">Download File</button>
+                            <button type="button" class="btn btn-primary" onclick="saveTextAsFile()">Download
+                                File</button>
                         </div>
                     </div>
                 </div>
@@ -104,14 +162,63 @@
     </div>
 
     <script>
-        String.prototype.replaceAll = function (search, replacement) {
-            var target = this;
-            return target.replace(new RegExp(search, 'g'), replacement);
+        String.prototype.replaceAll = function (stringToFind, stringToReplace) {
+            if (stringToFind === stringToReplace) return this;
+            var temp = this;
+            var index = temp.indexOf(stringToFind);
+            while (index != -1) {
+                temp = temp.replace(stringToFind, stringToReplace);
+                index = temp.indexOf(stringToFind);
+            }
+            return temp;
+        };
+
+        function csvToArray(text) {
+            let p = '',
+                row = [''],
+                ret = [row],
+                i = 0,
+                r = 0,
+                s = !0,
+                l;
+            for (l of text) {
+                if ('"' === l) {
+                    if (s && l === p) row[i] += l;
+                    s = !s;
+                } else if (',' === l && s) l = row[++i] = '';
+                else if ('\n' === l && s) {
+                    if ('\r' === p) row[i] = row[i].slice(0, -1);
+                    row = ret[++r] = [l = ''];
+                    i = 0;
+                } else row[i] += l;
+                p = l;
+            }
+            return ret;
         };
 
         function saveTextAsFile() {
-            var textToWrite = document.getElementById('inputProfiles').value
+            var textToWrite = document.getElementById('outputProfiles').value
             var fileNameToSaveAs = 'profileExport.json'
+            var textFileAsBlob = new Blob([textToWrite], {
+                type: 'text/plain'
+            });
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            if (window.webkitURL != null) {
+                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            } else {
+                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                downloadLink.onclick = destroyClickedElement;
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+            }
+            downloadLink.click();
+        }
+
+        function saveTextAsFileCSV() {
+            var textToWrite = document.getElementById('outputProfiles').value
+            var fileNameToSaveAs = 'profileExport.csv'
             var textFileAsBlob = new Blob([textToWrite], {
                 type: 'text/plain'
             });
@@ -1402,33 +1509,41 @@
 
         function parseInput(jsonData) {
             for (var i in jsonData) {
-                if (jsonData[i].hasOwnProperty("billing") && jsonData[i].hasOwnProperty('billingMatch') && jsonData[i]
+                if (jsonData[i].hasOwnProperty("billing") && jsonData[i].hasOwnProperty('billingMatch') && jsonData[
+                        i]
                     .hasOwnProperty('card') && jsonData[i].hasOwnProperty('email') && jsonData[i].hasOwnProperty(
                         'profileName') && jsonData[i].hasOwnProperty('shipping')) {
                     return ('Dashe')
-                } else if (jsonData[i].hasOwnProperty("profileName") && jsonData[i].hasOwnProperty("email") && jsonData[
+                } else if (jsonData[i].hasOwnProperty("profileName") && jsonData[i].hasOwnProperty("email") &&
+                    jsonData[
                         i]
-                    .hasOwnProperty("billingAddress") && jsonData[i].hasOwnProperty("shippingAddress") && jsonData[i]
-                    .hasOwnProperty("profileName") && jsonData[i].hasOwnProperty("card") && jsonData[i].hasOwnProperty(
+                    .hasOwnProperty("billingAddress") && jsonData[i].hasOwnProperty("shippingAddress") && jsonData[
+                        i]
+                    .hasOwnProperty("profileName") && jsonData[i].hasOwnProperty("card") && jsonData[i]
+                    .hasOwnProperty(
                         "jigAddress") && jsonData[i].hasOwnProperty("oneCheckout") && jsonData[i].hasOwnProperty(
                         "shipToBill")) {
                     return ('Splashforce')
-                } else if (jsonData[i].hasOwnProperty("Billing") && jsonData[i].hasOwnProperty("CCNumber") && jsonData[
+                } else if (jsonData[i].hasOwnProperty("Billing") && jsonData[i].hasOwnProperty("CCNumber") &&
+                    jsonData[
                         i]
                     .hasOwnProperty("CVV") && jsonData[i].hasOwnProperty("CardType") && jsonData[i].hasOwnProperty(
-                        "Country") && jsonData[i].hasOwnProperty("Email") && jsonData[i].hasOwnProperty("ExpMonth") &&
+                        "Country") && jsonData[i].hasOwnProperty("Email") && jsonData[i].hasOwnProperty(
+                        "ExpMonth") &&
                     jsonData[i].hasOwnProperty("ExpYear") && jsonData[i].hasOwnProperty("Name") && jsonData[i]
                     .hasOwnProperty("Phone") && jsonData[i].hasOwnProperty("Same") && jsonData[i].hasOwnProperty(
                         "Shipping")
                 ) {
                     return ('Phantom')
-                } else if (jsonData[i].hasOwnProperty("billing") && jsonData[i].hasOwnProperty("card") && jsonData[i]
+                } else if (jsonData[i].hasOwnProperty("billing") && jsonData[i].hasOwnProperty("card") && jsonData[
+                        i]
                     .hasOwnProperty("cashOnDelivery") && jsonData[i].hasOwnProperty("dotTrick") && jsonData[i]
                     .hasOwnProperty("email") && jsonData[i].hasOwnProperty("id") && jsonData[i].hasOwnProperty(
                         "jigAddress") && jsonData[i].hasOwnProperty("jigPhone") && jsonData[i].hasOwnProperty(
                         "email") &&
                     jsonData[i].hasOwnProperty("limit") && jsonData[i].hasOwnProperty("limitCount") && jsonData[i]
-                    .hasOwnProperty("match") && jsonData[i].hasOwnProperty("shipping") && jsonData[i].hasOwnProperty(
+                    .hasOwnProperty("match") && jsonData[i].hasOwnProperty("shipping") && jsonData[i]
+                    .hasOwnProperty(
                         "title")) {
                     return ('PD')
                 } else if (jsonData[i].hasOwnProperty("name") && jsonData[i].hasOwnProperty("email") && jsonData[i]
@@ -1640,7 +1755,6 @@
                 }
             } else if (inputType == 'Balko') {
                 for (var i in jsonData['info']) {
-                    console.log(jsonData['info'][i])
                     if (jsonData['info'][i].hasOwnProperty('id') && jsonData['info'][i].hasOwnProperty('firstname') &&
                         jsonData[
                             'info'][i].hasOwnProperty('lastname') && jsonData['info'][i].hasOwnProperty('email')) {
@@ -1678,6 +1792,156 @@
                                 },
                                 "email": jsonData['info'][i]['email'],
                                 "profileName": jsonData['info'][i]['id']
+                            })
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }
+            } else if (inputType == 'CSV') {
+                var keyToInt = {}
+                var intToKey = {}
+                for (var i in jsonData) {
+                    if (i == 0) {
+                        for (var b in jsonData[i]) {
+                            keyToInt[jsonData[i][b]] = b
+                            intToKey[b] = jsonData[i][b]
+                        }
+                    } else {
+                        try {
+
+                            if (jsonData[i][keyToInt['ShippingLine1']] == '') {
+                                var shipVariable = 'Billing'
+                                var billVariable = 'Billing'
+                                var sameBill = true
+                            } else if (jsonData[i][keyToInt['BillingLine1']] == '') {
+                                var shipVariable = 'Shipping'
+                                var billVariable = 'Shipping'
+                                var sameBill = true
+                            } else {
+                                var shipVariable = 'Shipping'
+                                var billVariable = 'Billing'
+                                var sameBill = false
+                            }
+                            if (jsonData[i][keyToInt['CardMonth']].length == 1) {
+                                var ccMonth = '0' + jsonData[i][keyToInt['CardMonth']]
+                            } else {
+                                var ccMonth = jsonData[i][keyToInt['CardMonth']]
+                            }
+                            if (jsonData[i][keyToInt['CardYear']].length == 2) {
+                                var ccYear = '20' + jsonData[i][keyToInt['CardYear']]
+                            } else {
+                                var ccYear = jsonData[i][keyToInt['CardYear']]
+                            }
+                            if (jsonData[i][keyToInt[`${shipVariable}Country`]].length == 2) {
+                                jsonData[i][keyToInt[`${shipVariable}Country`]] = countryConverter('Code2Country',
+                                    jsonData[
+                                        i][keyToInt[`${shipVariable}Country`]])
+                            }
+                            if (jsonData[i][keyToInt[`${billVariable}Country`]].length == 2) {
+                                jsonData[i][keyToInt[`${billVariable}Country`]] = countryConverter('Code2Country',
+                                    jsonData[
+                                        i][keyToInt[`${billVariable}Country`]])
+                            }
+                            profiles.push({
+                                "shipping": {
+                                    "address": jsonData[i][keyToInt[`${shipVariable}Line1`]],
+                                    "line2": jsonData[i][keyToInt[`${shipVariable}Line2`]],
+                                    "city": jsonData[i][keyToInt[`${shipVariable}City`]],
+                                    "country": jsonData[i][keyToInt[`${shipVariable}Country`]],
+                                    "firstName": jsonData[i][keyToInt[`${shipVariable}First`]],
+                                    "lastName": jsonData[i][keyToInt[`${shipVariable}Last`]],
+                                    "phone": jsonData[i][keyToInt[`${shipVariable}Phone`]].replaceAll('+1', '')
+                                        .replaceAll(')', '').replaceAll('(', '').replaceAll(' ', '').replaceAll(
+                                            '-',
+                                            ''),
+                                    "state": jsonData[i][keyToInt[`${shipVariable}State`]],
+                                    "zip": jsonData[i][keyToInt[`${shipVariable}Zip`]]
+                                },
+                                "billing": {
+                                    "address": jsonData[i][keyToInt[`${billVariable}Line1`]],
+                                    "line2": jsonData[i][keyToInt[`${billVariable}Line2`]],
+                                    "city": jsonData[i][keyToInt[`${billVariable}City`]],
+                                    "country": jsonData[i][keyToInt[`${billVariable}Country`]],
+                                    "firstName": jsonData[i][keyToInt[`${billVariable}First`]],
+                                    "lastName": jsonData[i][keyToInt[`${billVariable}Last`]],
+                                    "phone": jsonData[i][keyToInt[`${billVariable}Phone`]].replaceAll('+1', '')
+                                        .replaceAll(')', '').replaceAll('(', '').replaceAll(' ', '').replaceAll(
+                                            '-',
+                                            ''),
+                                    "state": jsonData[i][keyToInt[`${billVariable}State`]],
+                                    "zip": jsonData[i][keyToInt[`${billVariable}Zip`]]
+                                },
+                                "billingMatch": sameBill,
+                                "card": {
+                                    "num": jsonData[i][keyToInt['CardNumber']].replaceAll(' ', ''),
+                                    "month": ccMonth,
+                                    "year": ccYear,
+                                    "cvc": jsonData[i][keyToInt['CardCVV']],
+                                    "noc": jsonData[i][keyToInt['CardName']]
+                                },
+                                "email": jsonData[i][keyToInt['Email']],
+                                "profileName": jsonData[i][keyToInt['ProfileName']]
+                            })
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }
+            } else if (inputType == 'SWFT') {
+                var keyToInt = {}
+                var intToKey = {}
+                for (var i in jsonData) {
+                    if (i == 0) {
+                        for (var b in jsonData[i]) {
+                            keyToInt[jsonData[i][b]] = b
+                            intToKey[b] = jsonData[i][b]
+                        }
+                    } else {
+                        try {
+
+                            if (jsonData[i][keyToInt['CC Month']].length == 1) {
+                                var ccMonth = '0' + jsonData[i][keyToInt['CC Month']]
+                            } else {
+                                var ccMonth = jsonData[i][keyToInt['CC Month']]
+                            }
+                            profiles.push({
+                                "shipping": {
+                                    "address": jsonData[i][keyToInt["Shipping Address 1"]],
+                                    "line2": jsonData[i][keyToInt["Shipping Address 2"]],
+                                    "city": jsonData[i][keyToInt["Shipping City"]],
+                                    "country": "United States",
+                                    "firstName": jsonData[i][keyToInt["Shipping First Name"]],
+                                    "lastName": jsonData[i][keyToInt["Shipping Last Name"]],
+                                    "phone": jsonData[i][keyToInt["Phone"]],
+                                    "state": jsonData[i][keyToInt["Shipping State"]],
+                                    "zip": jsonData[i][keyToInt["Shipping Zip Code"]]
+                                },
+                                "billing": {
+                                    "address": jsonData[i][keyToInt["Billing Address 1"]],
+                                    "line2": jsonData[i][keyToInt["Billing Address 2"]],
+                                    "city": jsonData[i][keyToInt["Billing City"]],
+                                    "country": "United States",
+                                    "firstName": jsonData[i][keyToInt["Billing First Name"]],
+                                    "lastName": jsonData[i][keyToInt["Billing Last Name"]],
+                                    "phone": jsonData[i][keyToInt["Phone"]],
+                                    "state": jsonData[i][keyToInt["Billing State"]],
+                                    "zip": jsonData[i][keyToInt["Billing Zip Code"]]
+                                },
+                                "billingMatch": JSON.parse(jsonData[i][keyToInt["Billing Same as Ship"]]
+                                    .toLowerCase()),
+                                "card": {
+                                    "num": jsonData[i][keyToInt['CC Number']].replaceAll(' ', ''),
+                                    "month": ccMonth,
+                                    "year": jsonData[i][keyToInt['CC Year']],
+                                    "cvc": jsonData[i][keyToInt['CVV']],
+                                    "noc": jsonData[i][keyToInt['Shipping First Name']] + " " + jsonData[i][
+                                        keyToInt[
+                                            'Shipping Last Name']
+                                    ]
+                                },
+                                "email": jsonData[i][keyToInt['Email']],
+                                "profileName": jsonData[i][keyToInt['Profile Name']]
                             })
                         } catch (error) {
                             console.log(error)
@@ -1828,7 +2092,9 @@
                         },
                         "card": {
                             "code": jsonData[i]['card']['cvc'],
-                            "expire": jsonData[i]['card']['month'] + '/' + jsonData[i]['card']['year'][2] +
+                            "expire": jsonData[i]['card']['month'] + '/' + jsonData[i]['card']['year'][
+                                    2
+                                ] +
                                 jsonData[i]['card']['year'][3],
                             "name": jsonData[i]['card']['noc'],
                             "number": jsonData[i]['card']['num']
@@ -1875,7 +2141,9 @@
                                 'card'
                             ]['num'][4] + jsonData[i]['card']['num'][5] + jsonData[i]['card']['num'][6] +
                             jsonData[i]['card']['num'][7] + jsonData[i]['card']['num'][8] + jsonData[
-                                i]['card']['num'][9] + " " + jsonData[i]['card']['num'][10] + jsonData[i]['card'][
+                                i]['card']['num'][9] + " " + jsonData[i]['card']['num'][10] + jsonData[i][
+                                'card'
+                            ][
                                 'num'
                             ][11] + jsonData[i]['card']['num'][12] + jsonData[i]['card']['num'][13] +
                             jsonData[i]['card']['num'][14]
@@ -1986,17 +2254,68 @@
                         "bcity": bcity
                     })
                 }
+            } else if (outputType == 'SWFT') {
+                var outputJSON =
+                    "Profile Name;Shipping First Name;Shipping Last Name;Shipping Address 1;Shipping Address 2;Shipping State;Shipping City;Shipping Zip Code;Billing Same as Ship;Billing First Name;Billing Last Name;Billing Address 1;Billing Address 2;Billing State;Billing City;Billing Zip Code;Phone;Email;CC Number;CC Year;CC Month;CVV;CC Type"
+                for (var i in jsonData) {
+                    if (jsonData[i]['card']['num'][0] == '5' && jsonData[i]['card']['num'][1] == '8' && jsonData[i][
+                            'card'
+                        ]['num'][2] == '5' && jsonData[i]['card']['num'][3] == '9') {
+                        var ccType = 'REDcard Credit'
+                    } else if (jsonData[i]['card']['num'][0] == '6' && jsonData[i]['card']['num'][1] == '3' && jsonData[
+                            i]['card']['num'][2] == '9' && jsonData[i]['card']['num'][3] == '4') {
+                        var ccType = 'REDcard Debit'
+                    } else if (jsonData[i]['card']['num'][0] == '3') {
+                        var ccType = 'AMEX'
+                    } else if (jsonData[i]['card']['num'][0] == '4') {
+                        var ccType = 'VISA'
+                    } else if (jsonData[i]['card']['num'][0] == '5') {
+                        var ccType = 'MASTERCARD'
+                    } else if (jsonData[i]['card']['num'][0] == '6') {
+                        var ccType = 'DISCOVER'
+                    }
+                    outputJSON +=
+                        `\n${jsonData[i]['profileName']};${jsonData[i]['shipping']['firstName']};${jsonData[i]['shipping']['lastName']};${jsonData[i]['shipping']['address']};${jsonData[i]['shipping']['line2']};${jsonData[i]['shipping']['state']};${jsonData[i]['shipping']['city']};${jsonData[i]['shipping']['zip']};${jsonData[i]['billingMatch']};${jsonData[i]['billing']['firstName']};${jsonData[i]['billing']['lastName']};${jsonData[i]['billing']['address']};${jsonData[i]['billing']['line2']};${jsonData[i]['billing']['state']};${jsonData[i]['billing']['city']};${jsonData[i]['billing']['zip']};${jsonData[i]['shipping']['phone']};${jsonData[i]['email']};${jsonData[i]['card']['num']};${jsonData[i]['card']['year']};${Number(jsonData[i]['card']['month'])};${jsonData[i]['card']['cvc']};${ccType}`
+                }
             }
             return outputJSON;
         }
 
         function doStuff(outputType) {
-            var inputType = parseInput(JSON.parse($('textarea#inputProfiles')[0].value))
-            console.log(inputType)
-            var basedProfiles = convertToBasic(inputType, JSON.parse($('textarea#inputProfiles')[0].value))
+            try {
+                var inputType = parseInput(JSON.parse($('textarea#inputProfiles')[0].value))
+            } catch (error) {
+                if ($('textarea#inputProfiles')[0].value.includes("Profile Name") && $(
+                        'textarea#inputProfiles')[0]
+                    .value.includes("Shipping First Name") && $('textarea#inputProfiles')[0].value.includes(
+                        "Shipping Last Name") && $('textarea#inputProfiles')[0].value.includes(
+                        "Shipping Address 1")
+                ) {
+                    var inputType = 'SWFT'
+                } else {
+                    var inputType = 'CSV'
+                }
+            }
+            if (inputType == 'CSV' || inputType == 'SWFT') {
+                var basedProfiles = convertToBasic(inputType, csvToArray($('textarea#inputProfiles')[0].value
+                    .replaceAll('	', ',').replaceAll(';', ',')))
+            } else {
+                var basedProfiles = convertToBasic(inputType, JSON.parse($('textarea#inputProfiles')[0].value))
+            }
             var outputProfiles = convertFromBasic(outputType, basedProfiles)
-            $('textarea#outputProfiles')[0].value = JSON.stringify(outputProfiles)
-            $('#modal-title')[0].innerText = `Profile Data Successfully Converter from ${inputType} To ${outputType}`
+            if (outputType == 'SWFT') {
+                $('textarea#outputProfiles')[0].value = outputProfiles.replaceAll('null', '').replaceAll('true', 'TRUE').replaceAll('false', 'FALSE')
+                $('button.btn.btn-primary')[0].onclick = function () {
+                    saveTextAsFileCSV()
+                }
+            } else {
+                $('textarea#outputProfiles')[0].value = JSON.stringify(outputProfiles)
+                $('button.btn.btn-primary')[0].onclick = function () {
+                    saveTextAsFile()
+                }
+            }
+            $('#modal-title')[0].innerText =
+                `Profile Data Successfully Converter from ${inputType} To ${outputType}`
             $('div#exampleModalCenter.modal').modal('toggle')
 
         }
